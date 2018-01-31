@@ -18,7 +18,20 @@ class Crypto(object):
 	def byte_to_hexstr(bytes):
 		return base64.b16encode(bytes)
 
+	@staticmethod
+	def one_char_xor(bytes):
+		nums = bytes
+		strings = (''.join(chr(num ^ key) for num in nums) for key in range(256))
+		return max(strings, key=lambda s: s.count(' '))
 
+	@staticmethod
+	def repeat_xor(bytes, repeat_bytes):
+		l = len(repeat_bytes)
+		return bytearray(bytes[i]^repeat_bytes[i%l] for i in xrange(len(bytes)))
+
+	@staticmethod
+	def str2byte(text):
+		return bytearray(ord(c) for c in text)
 
 
 def main():    
@@ -34,8 +47,12 @@ def main():
 	ans = Crypto.byte_to_hexstr(Crypto.xor(a,b))
 	assert(ans == '746865206B696420646F6E277420706C6179')
 
+	# SET1 Repated XOR
+	a= Crypto.str2byte("Burning 'em, if you ain't quick and nimble I go crazy when I hear a cymbal")
+	b= Crypto.str2byte("ICE")
+	ans = Crypto.byte_to_hexstr(Crypto.repeat_xor(a,b))
+	assert(ans == "0B3637272A2B2E63622C2E69692A23693A2A3C6324202D623D63343C2A26226324272765272A282B2F20690A652E2C652A3124333A653E2B2027630C692B20283165286326302E27282F")
+
 
 if __name__ == "__main__":
     main()
-
-
